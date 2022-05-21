@@ -50,7 +50,7 @@ class MealListController extends GetxController {
     meals.value = [];
   }
 
-  deleteTodo(Meal meal) async {
+  deleteMeal(Meal meal) async {
     meals.remove(meal);
     var box = await Hive.openBox('db');
     box.put('meals', meals.toList());

@@ -53,10 +53,16 @@ class MealListScreen extends GetView<MealListController> {
           itemCount: controller.meals.length,
           itemBuilder: (context, index) {
             Meal meal = controller.meals[index];
-            return GestureDetector(
-              onLongPress: () {},
-              child: MealListTile(
-                name: meal.name,
+            return Dismissible(
+              key: Key(meal.id),
+              onDismissed: (DismissDirection direction) {
+                controller.deleteMeal(meal);
+              },
+              child: GestureDetector(
+                onLongPress: () {},
+                child: MealListTile(
+                  name: meal.name,
+                ),
               ),
             );
           },
@@ -74,23 +80,18 @@ class MealListScreen extends GetView<MealListController> {
             content: TextField(
               controller: controller.addMealTextController,
               decoration: InputDecoration(
-                labelStyle: TextStyle(color: outlineColor),
-                labelText: 'Enter meal name',
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 3, color: outlineColor),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 3, color: primaryColor),
-                  borderRadius: BorderRadius.circular(15),
-                ),
+                hintStyle: TextTheme().bodyLarge?.copyWith(color: outlineColor),
+                hintText: 'Enter meal name',
               ),
             ),
             actions: <Widget>[
               TextButton(
                 style: TextButton.styleFrom(primary: primaryColor),
                 child: const Text("Cancel"),
-                onPressed: () => Get.back(),
+                onPressed: () {
+                  controller.addMealTextController.text = '';
+                  Get.back();
+                },
               ),
               TextButton(
                 style: TextButton.styleFrom(primary: primaryColor),
