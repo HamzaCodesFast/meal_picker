@@ -1,0 +1,2 @@
+export 'package:meal_picker/infrastructure/navigation/bindings/controllers/meallist.controller.binding.dart';
+export 'package:meal_picker/infrastructure/navigation/bindings/controllers/mealpicker.controller.binding.dart'; 
