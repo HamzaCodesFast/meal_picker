@@ -5,8 +5,8 @@ import '../../../../presentation/mealpicker/controllers/mealpicker.controller.da
 class MealpickerControllerBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<MealpickerController>(
-      () => MealpickerController(),
+    Get.lazyPut<MealPickerController>(
+      () => MealPickerController(),
     );
   }
 }

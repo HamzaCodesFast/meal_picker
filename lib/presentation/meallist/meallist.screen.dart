@@ -3,27 +3,17 @@ import 'package:get/get.dart';
 import 'package:meal_picker/data/models/meal.dart';
 
 import '../../infrastructure/theme/theme_colors.dart';
+import '../../infrastructure/theme/theme_typo.dart';
 import 'controllers/meallist.controller.dart';
 
 class MealListScreen extends GetView<MealListController> {
   @override
   final controller = Get.put(MealListController());
 
-  void addMeal() {
-    // if text is empty
-    if (controller.addMealTextController.text.isEmpty) return;
-
-    Meal addingMeal = Meal(name: controller.addMealTextController.text);
-
-    // empty TextField
-    controller.addMealTextController.text = '';
-    controller.addMeal(addingMeal);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: surface2Color,
       appBar: AppBar(
         title: Text('Meal List'),
         //Choose Meal
@@ -33,15 +23,22 @@ class MealListScreen extends GetView<MealListController> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          _showTextInputDialog(context);
-          //showModalBottomSheet(context: context, builder: (context) => _modalBottomSheet());
+          _addMealDialog(context, "Meal", "Enter Meal name", "Cancel", "Add Meal", controller.addMeal);
         },
         label: Text('Add Meal'),
         icon: Icon(Icons.add),
         backgroundColor: primaryColor,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: _buildMealsList(),
+      body: Obx(
+        () => (controller.meals.value.isEmpty) ? _noMeals() : _buildMealsList(),
+      ),
+    );
+  }
+
+  Widget _noMeals() {
+    return Center(
+      child: Text("You currently have no saved meals.", style: bodyLargeTypo.copyWith(color: onBackgroundColor)),
     );
   }
 
@@ -59,7 +56,9 @@ class MealListScreen extends GetView<MealListController> {
                 controller.deleteMeal(meal);
               },
               child: GestureDetector(
-                onLongPress: () {},
+                onLongPress: () {
+                  _editMealNameDialog(context, "Edit Name", meal, "Cancel", "Edit Name");
+                },
                 child: MealListTile(
                   name: meal.name,
                 ),
@@ -71,14 +70,21 @@ class MealListScreen extends GetView<MealListController> {
     );
   }
 
-  Future<String?> _showTextInputDialog(BuildContext context) async {
+  Future<String?> _addMealDialog(
+    BuildContext context,
+    String titleText,
+    String hintText,
+    String dismissText,
+    String confirmText,
+    Function() confirmFunction,
+  ) async {
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: const Text('Meal'),
             content: TextField(
-              controller: controller.addMealTextController,
+              controller: controller.mealTextController,
               decoration: InputDecoration(
                 hintStyle: TextTheme().bodyLarge?.copyWith(color: outlineColor),
                 hintText: 'Enter meal name',
@@ -89,7 +95,7 @@ class MealListScreen extends GetView<MealListController> {
                 style: TextButton.styleFrom(primary: primaryColor),
                 child: const Text("Cancel"),
                 onPressed: () {
-                  controller.addMealTextController.text = '';
+                  controller.mealTextController.text = '';
                   Get.back();
                 },
               ),
@@ -97,7 +103,45 @@ class MealListScreen extends GetView<MealListController> {
                 style: TextButton.styleFrom(primary: primaryColor),
                 child: const Text('Add'),
                 onPressed: () {
-                  addMeal();
+                  confirmFunction();
+                  Get.back();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  Future<String?> _editMealNameDialog(
+    BuildContext context,
+    String titleText,
+    Meal meal,
+    String dismissText,
+    String confirmText,
+  ) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          controller.mealTextController.text = meal.name;
+          return AlertDialog(
+            title: Text(titleText),
+            content: TextField(
+              controller: controller.mealTextController,
+              style: TextTheme().bodyLarge?.copyWith(color: outlineColor),
+            ),
+            actions: <Widget>[
+              TextButton(
+                style: TextButton.styleFrom(primary: primaryColor),
+                child: Text(dismissText),
+                onPressed: () {
+                  Get.back();
+                },
+              ),
+              TextButton(
+                style: TextButton.styleFrom(primary: primaryColor),
+                child: Text(confirmText),
+                onPressed: () {
+                  controller.editMealName(meal, controller.mealTextController.text);
                   Get.back();
                 },
               ),

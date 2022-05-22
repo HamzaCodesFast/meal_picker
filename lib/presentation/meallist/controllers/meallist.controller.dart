@@ -4,9 +4,11 @@ import 'package:hive/hive.dart';
 import '../../../data/models/meal.dart';
 
 class MealListController extends GetxController {
-  RxList meals = [].obs;
+  RxList<Meal> meals = <Meal>[].obs;
 
-  final TextEditingController addMealTextController = TextEditingController();
+  final TextEditingController mealTextController = TextEditingController();
+
+  String get newName => mealTextController.text;
 
   @override
   onInit() {
@@ -19,8 +21,12 @@ class MealListController extends GetxController {
     super.onInit();
   }
 
-  addMeal(Meal meal) async {
-    meals.add(meal);
+  addMeal() async {
+    if (mealTextController.text.isEmpty) return;
+    Meal addingMeal = Meal(name: mealTextController.text);
+    mealTextController.text = '';
+
+    meals.add(addingMeal);
     var box = await Hive.openBox('db');
     box.put('meals', meals.toList());
     print("To Do Object added $meals");
@@ -37,17 +43,8 @@ class MealListController extends GetxController {
     }
 
     var mls = box.get('meals');
-    print("TODOS $mls");
+    print("MEALS $mls");
     if (mls != null) meals.value = mls;
-  }
-
-  clearTodos() {
-    try {
-      Hive.deleteBoxFromDisk('db');
-    } catch (error) {
-      print(error);
-    }
-    meals.value = [];
   }
 
   deleteMeal(Meal meal) async {
@@ -55,4 +52,23 @@ class MealListController extends GetxController {
     var box = await Hive.openBox('db');
     box.put('meals', meals.toList());
   }
+
+  editMealName(Meal meal, String newName) async {
+    if (mealTextController.text.isEmpty) return;
+    int index = meals.indexOf(meal);
+    Meal editedMeal = meals[index];
+    editedMeal.name = newName;
+    meals[index] = editedMeal;
+    var box = await Hive.openBox('db');
+    box.put('meals', meals.toList());
+  }
+
+  /*clearTodos() {
+    try {
+      Hive.deleteBoxFromDisk('db');
+    } catch (error) {
+      print(error);
+    }
+    meals.value = [];
+  }*/
 }
