@@ -10,7 +10,7 @@ class MealPickerController extends GetxController {
   MealListController mealListController = Get.put(MealListController());
 
   bool get doMealsExist {
-    List<Meal> meals = mealListController.meals.value;
+    var meals = mealListController.meals.value;
     return meals.isNotEmpty;
   }
 
@@ -45,7 +45,7 @@ class MealPickerController extends GetxController {
   void onClose() {}
 
   void pickMeal() {
-    List<Meal> meals = mealListController.meals.value;
+    var meals = mealListController.meals.value;
     if (meals.isEmpty) return;
     Meal randomMeal = (meals..shuffle()).first;
     pickedMeal.value = randomMeal;

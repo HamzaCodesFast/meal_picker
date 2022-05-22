@@ -4,7 +4,8 @@ import 'package:hive/hive.dart';
 import '../../../data/models/meal.dart';
 
 class MealListController extends GetxController {
-  RxList<Meal> meals = <Meal>[].obs;
+
+  RxList meals = [].obs;
 
   final TextEditingController mealTextController = TextEditingController();
 
@@ -29,7 +30,7 @@ class MealListController extends GetxController {
     meals.add(addingMeal);
     var box = await Hive.openBox('db');
     box.put('meals', meals.toList());
-    print("To Do Object added $meals");
+    print("Meal Object added $meals");
   }
 
   Future getMeals() async {
@@ -63,7 +64,7 @@ class MealListController extends GetxController {
     box.put('meals', meals.toList());
   }
 
-  /*clearTodos() {
+/*clearTodos() {
     try {
       Hive.deleteBoxFromDisk('db');
     } catch (error) {
