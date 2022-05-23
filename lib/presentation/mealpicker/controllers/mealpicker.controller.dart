@@ -14,7 +14,7 @@ class MealPickerController extends GetxController {
   // GETTER
 
   bool get doMealsExist {
-    var meals = mealListController.meals.value;
+    var meals = mealListController.meals;
     return meals.isNotEmpty;
   }
 
@@ -44,13 +44,13 @@ class MealPickerController extends GetxController {
   // METHODS
 
   void resetParameters() {
-    confirmedMeal = Rxn<Meal>();
-    pickedMeal = Rxn<Meal>();
-    pickedMeals = [].obs;
+    confirmedMeal.value = null;
+    pickedMeal.value = null;
+    pickedMeals.value = [];
   }
 
   void pickMeal() {
-    confirmedMeal = Rxn<Meal>();
+    confirmedMeal.value = null;
 
     var meals = mealListController.meals.value;
     if (meals.isEmpty) return;
@@ -75,8 +75,9 @@ class MealPickerController extends GetxController {
     var box = await Hive.openBox('db');
     box.put('meals', meals.toList());
 
+    confirmedMeal.value = pickedMeal.value;
     print("confirmed Meal: ${pickedMeal.value!.name} | ${pickedMeal.value!.frequency}");
-    pickedMeal = Rxn<Meal>();
+    pickedMeal.value = null;
   }
 
   void declineMeal() async {
@@ -90,8 +91,8 @@ class MealPickerController extends GetxController {
     var box = await Hive.openBox('db');
     box.put('meals', meals.toList());
 
-    print("confirmed Meal: ${pickedMeal.value!.name} | ${pickedMeal.value!.frequency}");
-    pickedMeal = Rxn<Meal>();
+    print("declined Meal: ${pickedMeal.value!.name} | ${pickedMeal.value!.frequency}");
+    pickedMeal.value = null;
   }
 
   // OVERRIDES

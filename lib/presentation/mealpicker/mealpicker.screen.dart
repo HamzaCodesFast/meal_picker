@@ -41,16 +41,16 @@ class MealpickerScreen extends GetView<MealPickerController> {
                       () => Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    controller.anyMealPickedYet ? Text("Do you want") : controller.anyMealConfirmedYet ? Text("Today we're having") : Container(),
+                    controller.anyMealConfirmedYet ? Text("Today we're having") : controller.anyMealPickedYet ? Text("Do you want") : Container(),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32.0),
                       child: Text(
                         controller.getPickedMealText,
                         textAlign: TextAlign.center,
-                        style: (!(controller.anyMealPickedYet) ? bodyLargeTypo : headlineSmallTypo).copyWith(color: onBackgroundColor),
+                        style: controller.anyMealConfirmedYet ? headlineSmallTypo.copyWith(color: successColor, fontWeight: FontWeight.w600) : (!(controller.anyMealPickedYet) ? bodyLargeTypo : headlineSmallTypo).copyWith(color: onBackgroundColor),
                       ),
                     ),
-                    controller.anyMealPickedYet ? Text("today?") : controller.anyMealConfirmedYet ? Text("Yay!") : Container(),
+                    controller.anyMealConfirmedYet ? Text("Yay!") : controller.anyMealPickedYet ? Text("today?") : Container(),
                   ],
                 ),),
               ),

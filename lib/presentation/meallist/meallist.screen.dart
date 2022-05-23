@@ -85,9 +85,13 @@ class MealListScreen extends GetView<MealListController> {
             title: const Text('Meal'),
             content: TextField(
               controller: controller.mealTextController,
+              autofocus: true,
               decoration: InputDecoration(
                 hintStyle: TextTheme().bodyLarge?.copyWith(color: outlineColor),
                 hintText: 'Enter meal name',
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: primaryColor),
+                ),
               ),
             ),
             actions: <Widget>[
