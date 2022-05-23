@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import '../../../data/models/meal.dart';
+import '../../mealpicker/controllers/mealpicker.controller.dart';
 
 class MealListController extends GetxController {
 
   RxList meals = [].obs;
-
   final TextEditingController mealTextController = TextEditingController();
 
   String get newName => mealTextController.text;
@@ -63,13 +63,4 @@ class MealListController extends GetxController {
     var box = await Hive.openBox('db');
     box.put('meals', meals.toList());
   }
-
-/*clearTodos() {
-    try {
-      Hive.deleteBoxFromDisk('db');
-    } catch (error) {
-      print(error);
-    }
-    meals.value = [];
-  }*/
 }

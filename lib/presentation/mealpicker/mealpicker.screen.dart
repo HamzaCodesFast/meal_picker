@@ -26,7 +26,7 @@ class MealpickerScreen extends GetView<MealPickerController> {
               color: onSurfaceVariantColor,
             ),
             onPressed: () {
-              Get.to(MealListScreen());
+              Get.to(() => MealListScreen());
             },
           )
         ],
@@ -37,23 +37,50 @@ class MealpickerScreen extends GetView<MealPickerController> {
           children: [
             Expanded(
               child: Center(
-                child: Obx(() => Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Text(
+                child: Obx(
+                      () => Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    controller.anyMealPickedYet ? Text("Do you want") : controller.anyMealConfirmedYet ? Text("Today we're having") : Container(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      child: Text(
                         controller.getPickedMealText,
                         textAlign: TextAlign.center,
-                        style: ((controller.anyMealPickedYet) ? bodyLargeTypo : headlineSmallTypo).copyWith(color: onBackgroundColor),
+                        style: (!(controller.anyMealPickedYet) ? bodyLargeTypo : headlineSmallTypo).copyWith(color: onBackgroundColor),
                       ),
-                )),
+                    ),
+                    controller.anyMealPickedYet ? Text("today?") : controller.anyMealConfirmedYet ? Text("Yay!") : Container(),
+                  ],
+                ),),
               ),
             ),
             Obx(
-              () => PrimaryButton(
-                label: "Pick a meal",
-                icon: Icons.restaurant_menu_outlined,
-                enabled: controller.doMealsExist,
-                onPressed: controller.pickMeal,
-              ),
+              () => (controller.anyMealPickedYet)
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        PrimaryButton(
+                          label: "No",
+                          icon: Icons.no_meals_outlined,
+                          enabled: true,
+                          onPressed: controller.declineMeal,
+                        ),
+                        SizedBox(width: 16),
+                        PrimaryButton(
+                          label: "Yes",
+                          icon: Icons.restaurant_outlined,
+                          enabled: true,
+                          onPressed: controller.confirmMeal,
+                        ),
+                      ],
+                    )
+                  : PrimaryButton(
+                      label: "Pick a meal",
+                      icon: Icons.restaurant_menu_outlined,
+                      enabled: controller.doMealsExist,
+                      onPressed: controller.pickMeal,
+                    ),
             )
           ],
         ),
